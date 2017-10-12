@@ -90,8 +90,7 @@ public class RestartContainerResolver implements IResolver {
           break;
         }
       }
-      LOG.info("Restarted container: " + stmgrId);
-
+      LOG.info("Restarting container: " + stmgrId);
       boolean b = schedulerClient.restartTopology(
           RestartTopologyRequest.newBuilder()
           .setContainerIndex(Integer.valueOf(stmgrId))
