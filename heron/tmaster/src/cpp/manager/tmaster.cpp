@@ -221,6 +221,9 @@ void TMaster::EstablishTMaster(EventLoop::Status) {
 }
 
 TMaster::~TMaster() {
+  delete http_client_;
+  delete dns_;
+
   delete topology_;
   delete packing_plan_;
   delete current_pplan_;
@@ -598,22 +601,22 @@ void TMaster::HandleCleanStatefulCheckpointResponse(proto::system::StatusCode _s
   tmaster_controller_->HandleCleanStatefulCheckpointResponse(_status);
 }
 
+// Called when tmaster receives registrations from zombie stmgrs
 void TMaster::KillContainer(const std::string& host_name,
     sp_int32 shell_port, sp_string stmgr_id) {
   HTTPKeyValuePairs kvs;
   kvs.push_back(make_pair("secret", GetTopologyId()));
-  OutgoingHTTPRequest* request =
-    new OutgoingHTTPRequest(host_name, shell_port,
+  OutgoingHTTPRequest* request = new OutgoingHTTPRequest(host_name, shell_port,
         "/killexecutor", BaseHTTPRequest::POST, kvs);
-  auto cb = [](IncomingHTTPResponse* response) {
+  auto cb = [host_name, shell_port](IncomingHTTPResponse* response) {
     LOG(WARNING) << "Response code of HTTP request of killing heron-executor: "
-      << response->response_code();
+      << response->response_code() << " on " << host_name << ":" << shell_port;
   };
+  sp_string log_msg = " to send `kill` http request to " + stmgr_id + " on " + host_name;
   if (http_client_->SendRequest(request, std::move(cb)) != SP_OK) {
-    LOG(ERROR) << "Failed to kill " << stmgr_id << " on "
-      << host_name;
+    LOG(ERROR) << "Failed" << log_msg;
   } else {
-    return;
+    LOG(INFO) << "Succeeded" << log_msg;
   }
 }
 
@@ -628,12 +631,6 @@ proto::system::Status* TMaster::RegisterStMgr(
     // Some other dude is already present with us.
     // First check to see if that other guy has timed out
     if (!stmgrs_[stmgr_id]->TimedOut()) {
-      sp_string zombie_host_name = stmgrs_[stmgr_id]->get_stmgr()->host_name();
-      sp_int32 zombie_port = stmgrs_[stmgr_id]->get_stmgr()->shell_port();
-      sp_string new_host_name = _stmgr.host_name();
-      sp_int32 new_port = _stmgr.shell_port();
-      KillContainer(zombie_host_name, zombie_port, stmgr_id);
-      KillContainer(new_host_name, new_port, stmgr_id);
       LOG(ERROR) << "Another stmgr exists at "
                  << stmgrs_[stmgr_id]->get_connection()->getIPAddress() << ":"
                  << stmgrs_[stmgr_id]->get_connection()->getPort()
@@ -641,6 +638,19 @@ proto::system::Status* TMaster::RegisterStMgr(
       proto::system::Status* status = new proto::system::Status();
       status->set_status(proto::system::DUPLICATE_STRMGR);
       status->set_message("Duplicate StreamManager");
+
+      // kill both zombie and new comer
+      sp_string zombie_host_name = stmgrs_[stmgr_id]->get_stmgr()->host_name();
+      sp_int32 zombie_port = stmgrs_[stmgr_id]->get_stmgr()->shell_port();
+      sp_string new_host_name = _stmgr.host_name();
+      sp_int32 new_port = _stmgr.shell_port();
+      LOG(WARNING) << "Killing connected zombie container "
+          << stmgr_id << " on " << zombie_host_name;
+      KillContainer(zombie_host_name, zombie_port, stmgr_id);
+      LOG(WARNING) << "Killing new comer of zombie container "
+          << stmgr_id << " on " << new_host_name;
+      KillContainer(new_host_name, new_port, stmgr_id);
+
       return status;
     } else {
       // The other guy has timed out
