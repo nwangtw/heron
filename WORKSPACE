@@ -154,10 +154,9 @@ maven_jar(
   artifact = "org.apache.httpcomponents:httpclient:" + http_client_version,
 )
 
-http_jar(
+maven_jar(
   name = "org_apache_httpcomponents_http_client_test",
-  url = "http://central.maven.org/maven2/org/apache/httpcomponents/httpclient/" +
-  http_client_version + "/httpclient-" + http_client_version + "-tests.jar"
+  artifact = "org.apache.httpcomponents:httpclient:" + http_client_version + ":httpclient:" + http_client_version + ":tests"
 )
 
 maven_jar(
