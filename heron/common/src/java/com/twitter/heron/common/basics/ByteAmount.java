@@ -78,27 +78,27 @@ public final class ByteAmount implements Comparable<ByteAmount> {
   }
 
   /**
-   * Converts the number of bytes to megabytes, rounding if there is a remainder. Because of loss
-   * of precision due to rounding, it's strongly advised to only use this method when it is certain
+   * Converts the number of bytes to megabytes, flooring if there is a remainder. Because of loss
+   * of precision due to flooring, it's strongly advised to only use this method when it is certain
    * that the only operations performed on the object were multiplication or addition and
    * subtraction of other megabytes. If division or increaseBy were used this method could round up
    * or down, potentially yielding unexpected results.
-   * @return returns the ByteValue in MBs or 0 if the value is &lt; (1024 * 1024) / 2
+   * @return returns the ByteValue in MBs or 0 if the value is &lt; (1024 * 1024)
    */
   public long asMegabytes() {
-    return Math.round((double) bytes / MB);
+    return Math.floorDiv(bytes, MB);
   }
 
   /**
-   * Converts the number of bytes to gigabytes, rounding if there is a remainder. Because of loss
-   * of precision due to rounding, it's strongly advised to only use this method when it is certain
+   * Converts the number of bytes to gigabytes, flooring if there is a remainder. Because of loss
+   * of precision due to flooring, it's strongly advised to only use this method when it is certain
    * that the only operations performed on the object were multiplication or addition and
    * subtraction of other gigabytes. If division or increaseBy were used this method could round up
    * or down, potentially yielding unexpected results.
-   * @return returns the ByteValue in GBs or 0 if the value is &lt; (1024 * 1024 * 1024) / 2
+   * @return returns the ByteValue in GBs or 0 if the value is &lt; (1024 * 1024 * 1024)
    */
   public long asGigabytes() {
-    return Math.round((double) bytes / GB);
+    return Math.floorDiv(bytes, GB);
   }
 
   /**

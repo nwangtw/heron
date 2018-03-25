@@ -33,21 +33,15 @@ public class ByteAmountTest {
     assertEquals(0, ByteAmount.fromBytes(2).asMegabytes());
 
     assertEquals(MB - 1, ByteAmount.fromBytes(MB - 1).asBytes());
-    assertEquals(1, ByteAmount.fromBytes(MB - 1).asMegabytes());
+    assertEquals(0, ByteAmount.fromBytes(MB - 1).asMegabytes());
     assertEquals(0, ByteAmount.fromBytes(MB - 1).asGigabytes());
 
     assertEquals(GB - 1, ByteAmount.fromBytes(GB - 1).asBytes());
-    assertEquals(1024, ByteAmount.fromBytes(GB - 1).asMegabytes());
-    assertEquals(1, ByteAmount.fromBytes(GB - 1).asGigabytes());
+    assertEquals(1023, ByteAmount.fromBytes(GB - 1).asMegabytes());
+    assertEquals(0, ByteAmount.fromBytes(GB - 1).asGigabytes());
 
     assertEquals(5, ByteAmount.fromMegabytes(5).asMegabytes());
     assertEquals(5, ByteAmount.fromGigabytes(5).asGigabytes());
-
-    assertEquals(1, ByteAmount.fromBytes((int) (MB * 1.5) - 1).asMegabytes());
-    assertEquals(2, ByteAmount.fromBytes((int) (MB * 1.5) + 1).asMegabytes());
-
-    assertEquals(1, ByteAmount.fromBytes((int) (GB * 1.5) - 1).asGigabytes());
-    assertEquals(2, ByteAmount.fromBytes((int) (GB * 1.5) + 1).asGigabytes());
 
     assertEquals(Long.MAX_VALUE, ByteAmount.fromBytes(Long.MAX_VALUE).asBytes());
     assertEquals(Long.MAX_VALUE, ByteAmount.fromMegabytes(Long.MAX_VALUE).asBytes());
@@ -197,15 +191,15 @@ public class ByteAmountTest {
   public void testToString() {
     assertEquals("ByteAmount{0 bytes}", ByteAmount.fromBytes(0).toString());
     assertEquals("ByteAmount{524287 bytes}", ByteAmount.fromBytes((MB / 2) - 1).toString());
-    assertEquals("ByteAmount{1 MB (524289 bytes)}", ByteAmount.fromBytes((MB / 2) + 1).toString());
-    assertEquals("ByteAmount{1 MB (1048575 bytes)}", ByteAmount.fromBytes(MB - 1).toString());
+    assertEquals("ByteAmount{524289 bytes}", ByteAmount.fromBytes((MB / 2) + 1).toString());
+    assertEquals("ByteAmount{1048575 bytes}", ByteAmount.fromBytes(MB - 1).toString());
     assertEquals("ByteAmount{1 MB (1048576 bytes)}", ByteAmount.fromBytes(MB).toString());
-    assertEquals("ByteAmount{1 GB (1073741823 bytes)}", ByteAmount.fromBytes(GB - 1).toString());
+    assertEquals("ByteAmount{1023 MB (1073741823 bytes)}", ByteAmount.fromBytes(GB - 1).toString());
     assertEquals("ByteAmount{1 GB (1073741824 bytes)}", ByteAmount.fromBytes(GB).toString());
     assertEquals("ByteAmount{2 GB (2147483648 bytes)}", ByteAmount.fromBytes(2 * GB).toString());
-    assertEquals("ByteAmount{2 GB (2147483647 bytes)}",
+    assertEquals("ByteAmount{1 GB (2147483647 bytes)}",
         ByteAmount.fromBytes((2 * GB) - 1).toString());
-    assertEquals("ByteAmount{8589934592 GB (9223372036854775807 bytes)}",
+    assertEquals("ByteAmount{8589934591 GB (9223372036854775807 bytes)}",
         ByteAmount.fromBytes(Long.MAX_VALUE).toString());
   }
 }

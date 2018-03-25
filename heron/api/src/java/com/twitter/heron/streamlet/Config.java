@@ -112,7 +112,7 @@ public final class Config implements Serializable {
    * @return the per-container RAM in gigabytes
    */
   public long getPerContainerRamAsGigabytes() {
-    return Math.round((double) ram / GB);
+    return Math.floorDiv(ram, GB);
   }
 
   /**
@@ -120,7 +120,7 @@ public final class Config implements Serializable {
    * @return the per-container RAM in megabytes
    */
   public long getPerContainerRamAsMegabytes() {
-    return Math.round((double) ram / MB);
+    return Math.floorDiv(ram, MB);
   }
 
   /**
