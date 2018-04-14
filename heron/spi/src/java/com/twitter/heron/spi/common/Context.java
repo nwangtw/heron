@@ -345,7 +345,7 @@ public class Context {
   }
 
   public static String metricscacheMgrMode(Config cfg) {
-    return cfg.getStringValue(Key.METRICSCACHEMGR_MODE);
+    return cfg.getStringValue(Key.METRICSCACHEMGR_MODE, "disabled");
   }
 
 }
