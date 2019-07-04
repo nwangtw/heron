@@ -19,9 +19,9 @@ Community is critical to Heron. Contributions are welcomed!
 You can first read the following pages to have a basic understanding
 of Heron:
 
-* [Heron Architecture](../../concepts/architecture/)
-* [Compiling Heron](../../developers/compiling/compiling/)
-* [Heron Codebase](../codebase/)
+* [Heron Architecture](../concepts/architecture/)
+* [Compiling Heron](../developers/compiling/compiling/)
+* [Heron Codebase](./codebase/)
 
 Heron includes a script to bootstrap an IntelliJ IDEA project. The project includes support for Heron
 code styles and copyright headers. To bootstrap an IDEA project run the following:
@@ -41,7 +41,7 @@ you should post on [mailing list](https://mail-archives.apache.org/mod_mbox/hero
 of opening GitHub issues.**
 
 ### Submitting a Patch
-1. Read the Heron [governance plan](../governance).
+1. Read the Heron [governance plan](./governance).
 
 2. Discuss your plan and design, and get agreement on
 [mailing list](https://mail-archives.apache.org/mod_mbox/heron-dev/).
@@ -61,4 +61,4 @@ TODO: links to sourcecode and dev and user groups
 -->
 
 
-Next: Review the [Heron Codebase](../codebase)
+Next: Review the [Heron Codebase](./codebase)
